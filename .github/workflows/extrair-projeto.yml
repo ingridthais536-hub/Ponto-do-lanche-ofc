@@ -1,0 +1,32 @@
+name: Organizar projeto
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extrair:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar arquivos do repositorio
+        uses: actions/checkout@v4
+
+      - name: Extrair projeto
+        run: |
+          unzip -o PontoDoLanche-Online-Render-PostgreSQL.zip -d /tmp/ponto
+          cp -R /tmp/ponto/PontoDoLanche/. .
+          rm -rf /tmp/ponto
+
+      - name: Remover ZIP
+        run: rm -f PontoDoLanche-Online-Render-PostgreSQL.zip
+
+      - name: Salvar arquivos organizados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Organizar projeto para hospedagem" || echo "Nada novo para salvar"
+          git 
