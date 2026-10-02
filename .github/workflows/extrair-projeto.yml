@@ -11,22 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar arquivos do repositorio
+      - name: Baixar repositorio
         uses: actions/checkout@v4
 
       - name: Extrair projeto
         run: |
-          unzip -o PontoDoLanche-Online-Render-PostgreSQL.zip -d /tmp/ponto
-          cp -R /tmp/ponto/PontoDoLanche/. .
           rm -rf /tmp/ponto
+          mkdir -p /tmp/ponto
+          unzip -q -o PontoDoLanche-Online-Render-PostgreSQL.zip -d /tmp/ponto
+          cp -R /tmp/ponto/PontoDoLanche/. .
 
-      - name: Remover ZIP
-        run: rm -f PontoDoLanche-Online-Render-PostgreSQL.zip
-
-      - name: Salvar arquivos organizados
+      - name: Remover arquivos temporarios
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Organizar projeto para hospedagem" || echo "Nada novo para salvar"
-          git 
+          rm -rf /tmp/ponto
+          rm -f PontoDoLanche-Online-Render-PostgreSQL.zip
+
+      - name: Preparar Git
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+      - name: Salvar alteracoes
+        run: |
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração para salvar."
+          else
+            git commit -m "Organizar projeto para hospedagem"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
