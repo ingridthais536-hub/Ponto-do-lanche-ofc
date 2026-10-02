@@ -1,0 +1,9 @@
+{
+  "name": "Ponto do Lanche",
+  "short_name": "Ponto do Lanche",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f0e5",
+  "theme_color": "#2d2f30",
+  "icons": []
+}
